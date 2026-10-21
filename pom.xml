@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>br.pucpr.bigdata</groupId>
+    <artifactId>average-temperature</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Average Temperature (MapReduce)</name>
+    <description>Average temperature of forestfireinput.csv computed with Hadoop MapReduce.</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Java 8 bytecode, so the jar also runs on lab machines with an older JVM. -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <hadoop.version>3.3.6</hadoop.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- Lets the job run as: hadoop jar average-temperature-1.0.0.jar <input> <output> -->
+                            <mainClass>br.pucpr.bigdata.avgtemp.AverageTemperature</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- mvn compile exec:java runs the job in Hadoop local mode, no cluster needed. -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>br.pucpr.bigdata.avgtemp.AverageTemperature</mainClass>
+                    <arguments>
+                        <argument>input/forestfireinput.csv</argument>
+                        <argument>target/output</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

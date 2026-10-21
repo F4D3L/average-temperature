@@ -1,0 +1,13 @@
+target/
+output/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Hadoop local-mode checksum files
+*.crc
