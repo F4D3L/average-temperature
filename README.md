@@ -1,43 +1,43 @@
-# Average Temperature — MapReduce
+# Temperatura Média — MapReduce
 
-Big Data (PUCPR) activity: the average temperature of `forestfireinput.csv` computed with Hadoop
-MapReduce.
+Atividade de Big Data (PUCPR): cálculo da temperatura média do arquivo `forestfireinput.csv`
+com Hadoop MapReduce.
 
-## How it works
+## Como funciona
 
-The input has no header; the temperature is column 8 (0-based). Every reading goes under the
-same global key with a composite value `(sum, count)`, and the division happens only once, in the
-reducer. Averaging partial averages would be wrong whenever the parts hold different numbers of
-readings (Lecture 05).
+O arquivo não tem cabeçalho, e a temperatura está na coluna 8 (contando a partir de 0). Todas as
+leituras vão para a mesma chave global com um valor composto `(soma, quantidade)`, e a divisão
+acontece uma única vez, no reducer. Tirar a média das médias parciais daria um resultado errado
+sempre que as partes tivessem quantidades diferentes de leituras (Aula 05).
 
 ```
-Map:     "7,5,mar,fri,...,8.2,..."  ->  ("temperature", (8.2, 1))
-Shuffle: group by key               ->  ("temperature", [(8.2, 1), (18.0, 1), ...])
-Reduce:  sum(temp) / sum(count)     ->  ("temperature", 18.889168278529986)
+Map:     "7,5,mar,fri,...,8.2,..."  ->  ("temperatura", (8.2, 1))
+Shuffle: agrupa pela chave          ->  ("temperatura", [(8.2, 1), (18.0, 1), ...])
+Reduce:  soma(temp) / soma(quant.)  ->  ("temperatura", 18.889168278529986)
 ```
 
-| Class | Role |
+| Classe | Papel |
 | --- | --- |
-| `AverageTemperature` | Driver (`main`): configures and submits the job |
-| `TemperatureMapper` | Map: parses a line, emits `("temperature", (temp, 1))` |
-| `TemperatureReducer` | Reduce: sums values and counts, emits the average |
-| `SumCountWritable` | Custom `Writable` for the composite value `(sum, count)` |
+| `AverageTemperature` | Driver (`main`): configura e submete o job |
+| `TemperatureMapper` | Map: lê uma linha e emite `("temperatura", (temp, 1))` |
+| `TemperatureReducer` | Reduce: soma as temperaturas e as quantidades e emite a média |
+| `SumCountWritable` | `Writable` customizado para o valor composto `(soma, quantidade)` |
 
-Result: **18.889168278529986** over 517 readings (sum 9765.7).
+Resultado: **18,889168278529986 °C** sobre 517 leituras (soma 9765,7).
 
-## Running
+## Como executar
 
-Requirements: Maven and **Java 8, 11 or 17**. Hadoop 3.3.6 does not run on Java 23 or later.
+Requisitos: Maven e **Java 8, 11 ou 17**. O Hadoop 3.3.6 não roda no Java 23 ou superior.
 
 ```bash
-mvn package                                   # target/average-temperature-1.0.0.jar
+mvn package                                   # gera target/average-temperature-1.0.0.jar
 
-# On a machine/VM with Hadoop installed (output dir must not exist):
+# Em uma máquina/VM com Hadoop instalado (o diretório de saída não pode existir):
 hdfs dfs -put input/forestfireinput.csv /forestfire/input.csv
 hadoop jar target/average-temperature-1.0.0.jar /forestfire/input.csv /forestfire/output
 hdfs dfs -cat /forestfire/output/part-r-00000
 
-# Hadoop local mode, no cluster (Linux/macOS; on Windows Hadoop also needs winutils.exe):
-mvn compile exec:java                         # reads input/, writes target/output/
+# Modo local do Hadoop, sem cluster (Linux/macOS; no Windows o Hadoop também exige o winutils.exe):
+mvn compile exec:java                         # lê input/ e grava em target/output/
 cat target/output/part-r-00000
 ```

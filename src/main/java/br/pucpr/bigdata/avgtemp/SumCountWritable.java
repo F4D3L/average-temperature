@@ -7,23 +7,24 @@ import java.io.IOException;
 import org.apache.hadoop.io.Writable;
 
 /**
- * Composite value carried from Map to Reduce: a partial sum of temperatures and how many
- * readings that sum covers.
+ * Valor composto enviado do Map para o Reduce: uma soma parcial de temperaturas e a quantidade de
+ * leituras que essa soma representa.
  *
- * <p>An average cannot be built by averaging partial averages, because each part may hold a
- * different number of readings (Lecture 05: 9.42 instead of 9.94). Carrying the pair
- * {@code (sum, count)} keeps every reading with the same weight, and the division happens only
- * once, in the reducer.
+ * <p>Não dá para obter a média tirando a média das médias parciais, porque cada parte pode ter uma
+ * quantidade diferente de leituras (Aula 05: 9,42 em vez de 9,94). Levar o par
+ * {@code (soma, quantidade)} mantém o mesmo peso para todas as leituras, e a divisão acontece uma
+ * única vez, no reducer.
  *
- * <p>Hadoop serializes keys and values between the map and reduce phases, so the class implements
- * {@link Writable}: {@link #write} and {@link #readFields} must handle the fields in the same order.
+ * <p>O Hadoop serializa chaves e valores entre as fases de map e reduce, por isso a classe
+ * implementa {@link Writable}: {@link #write} e {@link #readFields} precisam tratar os campos na
+ * mesma ordem.
  */
 public class SumCountWritable implements Writable {
 
     private double sum;
     private long count;
 
-    /** Hadoop creates values through reflection and then calls {@link #readFields}, so a no-arg constructor is required. */
+    /** O Hadoop cria os valores por reflexão e depois chama {@link #readFields}, então o construtor sem argumentos é obrigatório. */
     public SumCountWritable() {
     }
 
@@ -31,7 +32,7 @@ public class SumCountWritable implements Writable {
         set(sum, count);
     }
 
-    /** Lets a mapper reuse one instance instead of allocating a new object for every line. */
+    /** Permite ao mapper reutilizar uma única instância em vez de criar um objeto por linha. */
     public void set(double sum, long count) {
         this.sum = sum;
         this.count = count;
@@ -57,7 +58,7 @@ public class SumCountWritable implements Writable {
         count = in.readLong();
     }
 
-    /** Used when the value is written to a text output file. */
+    /** Usado quando o valor é gravado em um arquivo de saída de texto. */
     @Override
     public String toString() {
         return sum + "\t" + count;

@@ -9,12 +9,12 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Average Temperature (MapReduce)</name>
-    <description>Average temperature of forestfireinput.csv computed with Hadoop MapReduce.</description>
+    <name>Temperatura Média (MapReduce)</name>
+    <description>Temperatura média do forestfireinput.csv calculada com Hadoop MapReduce.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Java 8 bytecode, so the jar also runs on lab machines with an older JVM. -->
+        <!-- Bytecode Java 8, para o jar rodar também nas máquinas do laboratório com JVM mais antiga. -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <hadoop.version>3.3.6</hadoop.version>
@@ -37,14 +37,14 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <!-- Lets the job run as: hadoop jar average-temperature-1.0.0.jar <input> <output> -->
+                            <!-- Permite rodar o job com: hadoop jar average-temperature-1.0.0.jar <entrada> <saída> -->
                             <mainClass>br.pucpr.bigdata.avgtemp.AverageTemperature</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
             <plugin>
-                <!-- mvn compile exec:java runs the job in Hadoop local mode, no cluster needed. -->
+                <!-- mvn compile exec:java roda o job no modo local do Hadoop, sem precisar de cluster. -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>

@@ -9,35 +9,35 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 /**
- * Driver (main class): configures and submits the MapReduce job that computes the average
- * temperature of {@code forestfireinput.csv}.
+ * Driver (classe main): configura e submete o job MapReduce que calcula a temperatura média de
+ * {@code forestfireinput.csv}.
  *
  * <pre>
- * Map:     line             -> ("temperature", (temp, 1))
- * Shuffle: groups by key    -> ("temperature", [(t1, 1), (t2, 1), ...])
- * Reduce:  sum(t) / sum(1)  -> ("temperature", average)
+ * Map:     linha                     -> ("temperatura", (temp, 1))
+ * Shuffle: agrupa pela chave         -> ("temperatura", [(t1, 1), (t2, 1), ...])
+ * Reduce:  soma(temp) / soma(quant.) -> ("temperatura", média)
  * </pre>
  *
- * <p>Usage: {@code hadoop jar average-temperature-1.0.0.jar <input path> <output dir>}. The output
- * directory must not exist yet; Hadoop refuses to overwrite it.
+ * <p>Uso: {@code hadoop jar average-temperature-1.0.0.jar <entrada> <diretório de saída>}. O
+ * diretório de saída ainda não pode existir; o Hadoop se recusa a sobrescrevê-lo.
  */
 public class AverageTemperature {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
-            System.err.println("Usage: AverageTemperature <input path> <output dir>");
+            System.err.println("Uso: AverageTemperature <entrada> <diretório de saída>");
             System.exit(2);
         }
 
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "average temperature");
-        // Tells Hadoop which jar to ship to the nodes that run the tasks.
+        Job job = Job.getInstance(conf, "temperatura media");
+        // Indica ao Hadoop qual jar enviar aos nós que executam as tarefas.
         job.setJarByClass(AverageTemperature.class);
 
         job.setMapperClass(TemperatureMapper.class);
         job.setReducerClass(TemperatureReducer.class);
 
-        // The map output types differ from the final output types, so both pairs are declared.
+        // Os tipos de saída do Map são diferentes dos tipos da saída final, então os dois pares são declarados.
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(SumCountWritable.class);
         job.setOutputKeyClass(Text.class);
