@@ -1,5 +1,3 @@
-package br.pucpr.bigdata.avgtemp;
-
 import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;

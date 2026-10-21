@@ -1,5 +1,3 @@
-package br.pucpr.bigdata.avgtemp;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

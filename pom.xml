@@ -29,6 +29,16 @@
     </dependencies>
 
     <build>
+        <!-- Código e recursos ficam direto em src/, sem a estrutura src/main/java padrão do Maven. -->
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -38,7 +48,7 @@
                     <archive>
                         <manifest>
                             <!-- Permite rodar o job com: hadoop jar average-temperature-1.0.0.jar <entrada> <saída> -->
-                            <mainClass>br.pucpr.bigdata.avgtemp.AverageTemperature</mainClass>
+                            <mainClass>AverageTemperature</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -49,7 +59,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>br.pucpr.bigdata.avgtemp.AverageTemperature</mainClass>
+                    <mainClass>AverageTemperature</mainClass>
                     <arguments>
                         <argument>input/forestfireinput.csv</argument>
                         <argument>target/output</argument>
